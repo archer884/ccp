@@ -1,4 +1,11 @@
-use std::{collections::HashMap, ffi::OsString, fs::{self, File}, io::{self, BufReader, BufWriter}, path::{Path, PathBuf}, thread};
+use std::{
+    collections::HashMap,
+    ffi::OsString,
+    fs::{self, File},
+    io::{self, BufReader, BufWriter},
+    path::{Path, PathBuf},
+    thread,
+};
 
 use clap::Parser;
 use rayon::prelude::*;
@@ -69,7 +76,7 @@ fn main() {
 fn run(opts: &Opts) -> anyhow::Result<()> {
     let from: Vec<_> = opts.paths().collect();
     let from2 = from.clone(); // fuck me running
-    // let to = Path::new(&opts.to).canonicalize()?;
+                              // let to = Path::new(&opts.to).canonicalize()?;
     let to = Path::new(&opts.to);
     let to_dir = to.is_dir();
 
