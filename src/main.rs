@@ -166,8 +166,8 @@ fn build_hashes(paths: &[PathBuf]) -> io::Result<HashMap<OsString, blake3::Hash>
 }
 
 fn copy(from: &Path, to: &Path) -> io::Result<()> {
-    let mut from = File::open(&from).map(BufReader::new)?;
-    let mut to = File::open(&to).map(BufWriter::new)?;
+    let mut from = File::open(from).map(BufReader::new)?;
+    let mut to = File::create(to).map(BufWriter::new)?;
     io::copy(&mut from, &mut to)?;
     Ok(())
 }
