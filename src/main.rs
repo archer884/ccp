@@ -8,6 +8,7 @@ use std::{
 
 mod error;
 
+use blake3::Hasher;
 use clap::Parser;
 use error::Error;
 use rayon::prelude::*;
@@ -156,13 +157,14 @@ fn run(opts: &Opts) -> Result<(), error::Error> {
 }
 
 fn build_hashes(paths: &[PathBuf]) -> io::Result<HashMap<OsString, blake3::Hash>> {
-    paths
-        .into_par_iter()
-        .map(|path| {
-            fs::read(&path)
-                .map(|content| (path.file_name().unwrap().to_owned(), blake3::hash(&content)))
-        })
-        .collect()
+    paths.into_par_iter().map(|path| hash(path)).collect()
+}
+
+fn hash(path: &Path) -> io::Result<(OsString, blake3::Hash)> {
+    let mut content = File::open(path).map(BufReader::new)?;
+    let mut hasher = Hasher::new();
+    io::copy(&mut content, &mut hasher)?;
+    Ok((path.file_name().unwrap().to_owned(), hasher.finalize()))
 }
 
 fn copy(from: &Path, to: &Path) -> io::Result<()> {
