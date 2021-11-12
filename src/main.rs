@@ -21,6 +21,8 @@ struct Opts {
     to: String,
     #[clap(short, long)]
     verbose: bool,
+    #[clap(short, long)]
+    debug: bool,
 }
 
 impl Opts {
@@ -82,6 +84,13 @@ fn run(opts: &Opts) -> Result<(), error::Error> {
     let from: Vec<_> = opts.paths().collect();
     let to = Path::new(&opts.to);
     let to_dir = to.is_dir();
+
+    // For debugging Windows behavior.
+    if opts.debug {
+        for path in &from {
+            println!("{}", path.display());
+        }
+    }
 
     if from.len() > 1 && !to_dir {
         return Err(Error::Data);
